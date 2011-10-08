@@ -1,3 +1,11 @@
+/*
+
+pSlider : a jQuery slider plugin for desktop and mobile websites.
+Author : Sai-Kit Hui
+Website : http://areyoudesign.com
+
+*/
+
 (function ( $ ) {
 
 $.fn.pSlider = function ( option ) {
@@ -24,25 +32,26 @@ $.fn.pSlider = function ( option ) {
 	var opt = $.extend( defaults, option );
 	var timer = 0;
 	var int = false; // flag that starts and stop the onArrowClick handler
+	
+	/* jQuery objects */ 
 	var s = $(this), // the source element
-		$slider,
-		$rail,
-		$thumb,
-		$progressBar,
-		$number,
-		$arrow,
-		$up,
-		$down;
+		$rail, // the track
+		$thumb, // the slider
+		$progressBar, // the progress track
+		$number, // the returned value
+		$up, // up arrow
+		$down; // down arrow
 		
-	var range,
+	/* constants and measurements */	
+		
+	var range = opt.max - opt.min,
+		tAdjust = (opt.length - opt.thumb) / opt.length,
 		inVal,
-		tAdjust,
 		position,
 		pLength;
 		
 	var data = {}; // object of slider data that can be accessed by the callback function
 		
-	
 	var slider = (function() {
 		
 		init = function ()
@@ -55,7 +64,7 @@ $.fn.pSlider = function ( option ) {
 		{
 			$slider = $('<span class="pS-slider">'); 
 		
-			opt.axis == 'y' ? $slider.addClass('pS-slider-y') : $slider.addClass('pS-slider-x');
+			
 		
 			s.html($slider);
 			$rail = $('<span class="pS-rail">').data({'status': 'ready'}).appendTo($slider);
@@ -63,12 +72,15 @@ $.fn.pSlider = function ( option ) {
 			$progressBar = $('<span class="pS-progressBar">').appendTo($rail);
 			$number = $('<span class="pS-number">').appendTo($rail);
 			$cap = $('<span class="pS-cap-min"></span><span class="pS-cap-max"></span>').appendTo($rail);
+			$arrows = $('<div class="pS-arrows">').appendTo($slider);
+			$up = $('<span class="pS-btn pS-btn-up">+</span>').appendTo($arrows);
+			$down = $('<span class="pS-btn pS-btn-down">&ndash;</span>').appendTo($arrows);			
 			
-			range = opt.max - opt.min;
 			inVal = opt.axis == 'y' ? Math.abs((opt.value - opt.min) - range) : opt.value - opt.min;
-			tAdjust = (opt.length - opt.thumb) / opt.length;
 			position = Math.floor(Math.floor((inVal * opt.length)/range) * tAdjust);
-			pLength = opt.axis == 'y' ? opt.length - position : position;			
+			pLength = opt.axis == 'y' ? opt.length - position : position;	
+
+			opt.axis == 'y' ? $slider.addClass('pS-slider-y') : $slider.addClass('pS-slider-x');			
 			
 			if(opt.axis == 'y')
 			{
@@ -89,12 +101,10 @@ $.fn.pSlider = function ( option ) {
 				$number.css({left: position}).text(numType(opt.value));	
 			}
 			
-			if(opt.type == 'dollar')
-				$number.addClass('pS-dollar');
-				
-			$arrows = $('<div class="pS-arrows">').appendTo($slider);
-			$up = $('<span class="pS-btn pS-btn-up">+</span>').appendTo($arrows);
-			$down = $('<span class="pS-btn pS-btn-down">&ndash;</span>').appendTo($arrows);
+			// adds a class to the value to indicate type
+			
+			if(opt.type)
+				$number.addClass('pS-' + opt.type);
 			
 			callback(opt.value, 'onFinish');
 		};
@@ -103,9 +113,9 @@ $.fn.pSlider = function ( option ) {
 		{
 			$rail.click(handlers.onRailClick);
 			$thumb.bind('mousedown touchstart click', handlers.onThumbDrag);
+			$number.bind('touchstart mousedown select', handlers.onThumbDrag);			
 			$up.bind('mousedown touchstart', {direction : 'up'}, handlers.onArrowClick);
 			$down.bind('mousedown touchstart', {direction : 'down'}, handlers.onArrowClick);
-			$number.bind('touchstart mousedown select', handlers.onThumbDrag);
 		};
 		
 		handlers = {
@@ -310,11 +320,13 @@ $.fn.pSlider = function ( option ) {
 				int = true;
 				plusVal('', e.data.direction)
 					
-				$(document).bind('mouseup touchend', function ()
-				{
-					int = false;
-					$(this).unbind('mouseup touchend');
-				});
+				$(document).bind('mouseup touchend', handlers.onArrowRelease);
+			},
+			
+			onArrowRelease : function (e)
+			{
+				int = false;
+				$(this).unbind('mouseup touchend');
 			}
 			
 		};
@@ -325,7 +337,6 @@ $.fn.pSlider = function ( option ) {
 		{
 			if($.isArray(opt.array) && opt.array.length > 0)
 			{
-				
 				if(typeof(opt.array[value]) == 'undefined')
 					return opt.array[value % opt.array.length];
 				else		
