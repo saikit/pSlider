@@ -1,0 +1,134 @@
+/* slider attributes */
+
+#slider {
+	font-family:Cambria, "Times New Roman", serif;
+}
+
+.pS-slider {
+	display:block;
+	margin:auto;
+	padding:50px 0 0;
+}
+
+.pS-rail {
+	display:block;
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#bababa), to(#909090));
+	background:-moz-linear-gradient(0% 0% 180deg,#bababa, #909090);
+	border:1px solid #b0b0b0;
+	margin:0 auto 21px;
+	border-radius:7px;
+	position:relative;
+	height:284px;
+	width:188px;
+	z-index:2;
+}
+
+.pS-rail .pS-progressBar {
+	z-index:5;
+	position:absolute;
+	display:block;
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#9eeb4b), to(#79ca19));
+	background:-moz-linear-gradient(0% 0% 180deg,#9eeb4b, #79ca19);
+	border:1px solid #79ca19;
+	border-radius:7px;
+	width:13px;
+}
+
+.pS-rail .pS-thumb {
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#eee), to(#aaa));
+	border-radius:12px;
+	height:38px;
+	width:37px;
+	z-index:10;
+	position:absolute;
+	margin:0 0 0 -12px;
+}
+
+.pS-number {
+	color:#fff;
+	font-weight:600;
+	font-size:24px;
+	text-shadow:2px 2px 0 #000;
+	z-index:20;
+	background:rgba(0,0,0,0.7);
+	border-radius:15px;
+	width:60px;
+	height:60px;
+	line-height:60px;
+	text-align:center;
+	display:block;
+	margin:-80px 0 0 -24px;
+	position:absolute;
+}
+
+.pS-dollar {
+	font-size:27px;
+}
+
+.pS-btn {
+	display:block;
+	width:100px;
+	height:60px;
+	float:left;
+	color:#fff;
+	line-height:60px;
+	text-align:center;
+	font-size:48px;
+	cursor:pointer;
+	font-weight:600;
+}
+
+.pS-btn-up {
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#666));
+	border-radius:15px 0 0 15px;
+}
+
+.pS-btn-down {
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#555));
+	border-radius:0 15px 15px 0;
+}
+
+.pS-arrows {
+	clear:both;
+	width:200px;
+	margin:auto;
+}
+
+/* axis specific attributes */
+
+.pS-slider-x {
+	clear:both;
+	width:auto;
+	position:relative;
+	z-index:10;
+}
+
+.pS-slider-x .pS-arrows {
+	clear:none;
+	float:right;
+	margin:0 15px 0 0;
+}
+
+.pS-slider-x .pS-rail {
+	height:13px !important;
+	float:right;
+	margin:19px 0 0 -5px;
+	width:188px;
+}
+
+.pS-slider-x .pS-progressBar {
+	height:13px;
+	padding:0 10px 0 0;
+}
+
+.pS-slider-x .pS-thumb {
+	margin:-11px 0 0;
+}
+
+.pS-slider-x .pS-number {
+	margin:-90px 0 0 -61px;
+}
+
+.pS-slider-y .pS-rail {
+	width:13px !important;
+}

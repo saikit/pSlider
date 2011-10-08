@@ -1,0 +1,43 @@
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width; initial-scale = 1.0; maximum-scale=1.0; user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>pSlider (jQuery)</title>
+<link type="text/css" href="slider.css" rel="stylesheet">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="pSlider.js"></script>
+<script type="text/javascript">
+$(function () 
+{
+	$('#slider').pSlider({
+			axis : 'y',
+			min : -100,
+			max : 100,
+			value : 25,
+			length: 336,
+			step: 5,
+			thumb: 38,
+			animate: true,
+			onMove : function (response)
+			{
+				$('#value').text(response.value);
+			},
+			onFinish : function (response)
+			{
+				$('#value').text(response.value);
+			}
+		});
+	
+});
+</script>
+</head>
+
+<body>
+<div id="slider"></div>
+
+The value of this position is <span id="value"></span>
+
+</body>
+</html>
