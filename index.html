@@ -20,6 +20,10 @@ $(function ()
 			step: 5,
 			thumb: 38,
 			animate: true,
+			onLoad : function (response)
+			{
+				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p>').insertAfter('#slider');
+			},
 			onMove : function (response)
 			{
 				$('#value').text(response.value);
@@ -36,8 +40,6 @@ $(function ()
 
 <body>
 <div id="slider"></div>
-
-The value of this position is <span id="value"></span>
 
 </body>
 </html>
