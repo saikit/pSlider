@@ -1,7 +1,12 @@
 /* slider attributes */
 
-#slider {
+body {
 	font-family:Cambria, "Times New Roman", serif;
+}
+
+p {
+	clear: both;
+	text-align:center;
 }
 
 .pS-slider {
@@ -18,8 +23,6 @@
 	margin:0 auto 21px;
 	border-radius:7px;
 	position:relative;
-	height:284px;
-	width:188px;
 	z-index:2;
 }
 
@@ -47,18 +50,24 @@
 .pS-number {
 	color:#fff;
 	font-weight:600;
-	font-size:24px;
+	font-size:28px;
 	text-shadow:2px 2px 0 #000;
 	z-index:20;
 	background:rgba(0,0,0,0.7);
 	border-radius:15px;
-	width:60px;
+	width:100px;
 	height:60px;
 	line-height:60px;
 	text-align:center;
 	display:block;
-	margin:-80px 0 0 -24px;
+	margin:-80px 0 0 -44px;
 	position:absolute;
+	box-shadow:10px 10px 25px #333;
+	border:1px solid #000;
+}
+
+.pS-rail .pS-number.pS-flipped {
+	margin: 50px 0 0 -44px;
 }
 
 .pS-dollar {
@@ -84,8 +93,12 @@
 }
 
 .pS-btn-down {
-	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#555));
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#343434), to(#656565));
 	border-radius:0 15px 15px 0;
+}
+
+.pS-arrowDown {
+	background:#b22222;
 }
 
 .pS-arrows {
@@ -101,6 +114,8 @@
 	width:auto;
 	position:relative;
 	z-index:10;
+	padding:100px 0 0;
+	width:600px;
 }
 
 .pS-slider-x .pS-arrows {
@@ -110,10 +125,9 @@
 }
 
 .pS-slider-x .pS-rail {
-	height:13px !important;
+	height:13px;
 	float:right;
-	margin:19px 0 0 -5px;
-	width:188px;
+	margin:19px 0 0;
 }
 
 .pS-slider-x .pS-progressBar {
@@ -126,7 +140,7 @@
 }
 
 .pS-slider-x .pS-number {
-	margin:-90px 0 0 -61px;
+	margin:-90px 0 0 -32px;
 }
 
 .pS-slider-y .pS-rail {
