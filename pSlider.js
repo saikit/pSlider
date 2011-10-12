@@ -132,6 +132,7 @@ $.fn.pSlider = function ( option ) {
 					{
 						var position = positions[i];
 						var value = values[i];
+						var index = i;
 						break;
 					}
 					else
@@ -143,15 +144,15 @@ $.fn.pSlider = function ( option ) {
 			
 			if(opt.animate && call == 'onFinish')
 			{
-				animateSlider(position, value, call);
+				animateSlider(position, value, index, call);
 			}
 			else
 			{
-				setSlider(position, value, call);
+				setSlider(position, value, index, call);
 			}
 		};
 		
-		animateSlider = function (position, value, call)
+		animateSlider = function (position, value, index, call)
 		{
 			var cVal = data.value;
 			position = position * tAdjust;
@@ -165,8 +166,8 @@ $.fn.pSlider = function ( option ) {
 				else
 				{
 					cVal += cVal < value ? opt.step : opt.step * -1;
-					$number.text(arrayVal(value));
-					callback(cVal, position, 'onMove');
+					$number.text(arrayVal(index, value));
+					callback(cVal, position, index, 'onMove');
 				}
 			}
 			
@@ -191,7 +192,7 @@ $.fn.pSlider = function ( option ) {
 				$rail.data({'status' : 'ready'});
 			}
 			
-			callback(value, position, call);
+			callback(value, position, index, call);
 		}
 		
 		setSlider = function (position, value, call)
@@ -201,13 +202,13 @@ $.fn.pSlider = function ( option ) {
 			if(opt.axis == 'y')
 			{
 				$thumb.css({bottom : position + '%'});
-				$number.css({bottom : position + '%'}).text(arrayVal(value));
+				$number.css({bottom : position + '%'}).text(arrayVal(index, value));
 				$progressBar.css({height : position + '%'});
 			}
 			else
 			{
 				$thumb.css({left : position + '%'});
-				$number.css({left : position + '%'}).text(value);
+				$number.css({left : position + '%'}).text(arrayVal(index, value));
 				$progressBar.css({width : position + '%'});
 			}
 			
@@ -325,14 +326,14 @@ $.fn.pSlider = function ( option ) {
 		
 		// transforms number display depending on type
 		
-		arrayVal = function ( value )
+		arrayVal = function ( index, value )
 		{
 			if($.isArray(opt.array) && opt.array.length > 0)
 			{
-				if(typeof(opt.array[value]) == 'undefined')
-					return opt.array[value % opt.array.length];
+				if(typeof(opt.array[index]) == 'undefined')
+					return opt.array[index % opt.array.length];
 				else		
-					return opt.array[value];
+					return opt.array[index];
 			}	
 			else
 			{
