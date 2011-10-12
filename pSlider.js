@@ -169,7 +169,7 @@ $.fn.pSlider = function ( option ) {
 				{
 					cVal += cVal < value ? opt.step : opt.step * -1;
 					$number.text(arrayVal(index, value));
-					callback(cVal, position, index, 'onMove');
+					callback(cVal, position, 'onMove');
 				}
 			}
 			
@@ -194,10 +194,10 @@ $.fn.pSlider = function ( option ) {
 				$rail.data({'status' : 'ready'});
 			}
 			
-			callback(value, position, index, call);
+			callback(value, position, call);
 		}
 		
-		setSlider = function (position, value, call)
+		setSlider = function (position, value, index, call)
 		{
 			position = position * tAdjust;
 		
