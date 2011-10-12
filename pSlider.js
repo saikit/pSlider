@@ -118,11 +118,13 @@ $.fn.pSlider = function ( option ) {
 			{
 				var position = positions[0];
 				var value = values[0];
+				var index = 0;
 			}
 			else if(coordinate >= 100)
 			{
 				var position = positions[indexes];
 				var value = values[indexes];
+				var index = indexes;
 			}
 			else
 			{
