@@ -23,7 +23,7 @@ $.fn.pSlider = function ( option ) {
 		animate: false, // set whether to animate value
 		speed: 200, // animation speed for click event
 		thumb: 36, // size of the thumb
-		flip: 10, // percentage value the number is in a flipped state
+		flip: 0, // percentage value the number is in a flipped state
 		array: [], // display values matched against an array
 		onLoad: {}, // callback function after loading slider
 		onMove: {}, // callback function that run while slider in motion
@@ -144,6 +144,8 @@ $.fn.pSlider = function ( option ) {
 				}
 			}
 			
+			position = position * tAdjust;
+			
 			if(opt.animate && call == 'onFinish')
 			{
 				animateSlider(position, value, index, call);
@@ -157,7 +159,6 @@ $.fn.pSlider = function ( option ) {
 		animateSlider = function (position, value, index, call)
 		{
 			var cVal = data.value;
-			position = position * tAdjust;
 					
 			_animNum = function ()
 			{
@@ -192,15 +193,22 @@ $.fn.pSlider = function ( option ) {
 			if($rail.data('status') == 'moving')
 			{
 				$rail.data({'status' : 'ready'});
+			};
+			
+			if(opt.flip && position >= opt.flip)
+			{
+				$number.addClass('pS-flipped');
 			}
+			else
+			{
+				$number.removeClass('pS-flipped');
+			};
 			
 			callback(value, position, call);
 		}
 		
 		setSlider = function (position, value, index, call)
 		{
-			position = position * tAdjust;
-		
 			if(opt.axis == 'y')
 			{
 				$thumb.css({bottom : position + '%'});
@@ -212,12 +220,21 @@ $.fn.pSlider = function ( option ) {
 				$thumb.css({left : position + '%'});
 				$number.css({left : position + '%'}).text(arrayVal(index, value));
 				$progressBar.css({width : position + '%'});
-			}
+			};
 			
 			if($rail.data('status') == 'moving')
 			{
 				$rail.data({'status' : 'ready'});
+			};
+			
+			if(opt.flip && position >= opt.flip)
+			{
+				$number.addClass('pS-flipped');
 			}
+			else
+			{
+				$number.removeClass('pS-flipped');
+			};
 			
 			callback(value, position, call)
 		};
