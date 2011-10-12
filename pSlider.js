@@ -95,9 +95,7 @@ $.fn.pSlider = function ( option ) {
 			if(opt.axis == 'x')
 			{
 				$rail.css({width : opt.length});
-				$thumb.css({left : position, width : opt.thumb});
-				$progressBar.css({left: 0, width : pLength});
-				$number.css({left: position}).text(arrayVal(opt.value));	
+				$thumb.css({width : opt.thumb});	
 			}
 			
 			dataController(positions[$.inArray(opt.value, values)] * opt.length, 'onLoad');
