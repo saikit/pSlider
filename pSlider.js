@@ -17,15 +17,15 @@ $.fn.pSlider = function ( option ) {
 		axis : 'y', // 'x' for horizontal, 'y' for vertical slider
 		min: 0, // minimum value
 		max: 100, // maximim value
-		value: 25, // default value on load
+		value: 25, // default value on load, should be a multiple of the min and max.
 		step: 1, // set increments each step
 		length: 200, // set the width/height of the progress bar
 		animate: false, // set whether to animate value
 		speed: 200, // animation speed for click event
 		thumb: 36, // size of the thumb
-		flip: .1, // percentage value the number is in a flipped state
+		flip: 10, // percentage value the number is in a flipped state
 		array: [], // display values matched against an array
-		onLoad: {}, // callback function that after loading slider
+		onLoad: {}, // callback function after loading slider
 		onMove: {}, // callback function that run while slider in motion
 		onFinish: {} // callback function that run after each action
 	}
@@ -46,10 +46,20 @@ $.fn.pSlider = function ( option ) {
 	/* constants and measurements */	
 		
 	var range = opt.max - opt.min,
+		indexes = range/opt.step;
 		tAdjust = (opt.length - opt.thumb) / opt.length,
-		inVal,
-		position,
-		pLength;
+		values = [opt.min];
+		positions = [];
+		
+		for(i = 0, len = indexes; i<len; i++)
+		{
+			values[i + 1] = values[i] + opt.step;
+		};
+		
+		for(i = 0, len = indexes; i<=len; i++)
+		{
+			positions[i] = (i/indexes) * 100;
+		}
 		
 	var data = {}; // object of slider data that can be accessed by the callback function
 		
@@ -74,23 +84,13 @@ $.fn.pSlider = function ( option ) {
 			$arrows = $('<div class="pS-arrows">').appendTo($slider);
 			$up = $('<span class="pS-btn pS-btn-up">+</span>').appendTo($arrows);
 			$down = $('<span class="pS-btn pS-btn-down">&ndash;</span>').appendTo($arrows);			
-			
-			inVal = opt.axis == 'y' ? Math.abs((opt.value - opt.min) - range) : opt.value - opt.min;
-			position = Math.floor(Math.floor((inVal * opt.length)/range) * tAdjust);
-			pLength = opt.axis == 'y' ? opt.length - position : position;	
 
 			opt.axis == 'y' ? $slider.addClass('pS-slider-y') : $slider.addClass('pS-slider-x');			
 			
 			if(opt.axis == 'y')
 			{
 				$rail.css({height : opt.length});
-				$thumb.css({top : position, height: opt.thumb});
-				$progressBar.css({top : position, height : pLength});
-				$number.css({top : position}).text(arrayVal(opt.value));
-				if(position <= opt.length * opt.flip || range == 0)
-					$number.addClass('pS-flipped');
-				else
-					$number.removeClass('pS-flipped');
+				$thumb.css({height: opt.thumb});
 			}
 			if(opt.axis == 'x')
 			{
@@ -100,7 +100,7 @@ $.fn.pSlider = function ( option ) {
 				$number.css({left: position}).text(arrayVal(opt.value));	
 			}
 			
-			callback(opt.value, 'onLoad');
+			dataController(positions[$.inArray(opt.value, values)] * opt.length, 'onLoad');
 		};
 		
 		initListeners = function ()
@@ -112,84 +112,125 @@ $.fn.pSlider = function ( option ) {
 			$down.bind('mousedown touchstart', {direction : 'down'}, handlers.onArrowClick);
 		};
 		
-		handlers = {
-			onRailClick : function (e)
+		dataController = function (coordinate, call)
+		{
+			coordinate = coordinate/opt.length;
+		
+			if(coordinate < 0)
 			{
-				if($(this).data('status') == 'ready' && $thumb.data('status') == 'ready')
+				var position = positions[0];
+				var value = values[0];
+			}
+			else if(coordinate >= 100)
+			{
+				var position = positions[indexes];
+				var value = values[indexes];
+			}
+			else
+			{
+				for(i = 0, len = indexes; i<len; i++)
 				{
-					var cVal = data.value;
-					var position = opt.axis == 'y' ? e.pageY - $rail.offset().top : e.pageX - $rail.offset().left;
-					var val = (Math.floor((position * range)/opt.length / opt.step)) * opt.step;
-					var inVal = opt.axis == 'y' ? Math.abs(val - range) : val;
-						position = Math.floor(Math.floor((val * opt.length)/range) * tAdjust);
-					
-					if(position < 0)
+					if(coordinate - positions[i] < 1/indexes || coordinate - positions[i] == 0)
 					{
-						position = 0;
-						inVal = opt.axis == 'y' ? opt.max : opt.min;
-					}
-					if(position > Math.floor(opt.length * tAdjust))
-					{
-						position = Math.floor(opt.length * tAdjust);
-						inVal = opt.axis == 'y' ? opt.min : opt.max;
-					}
-					
-					pLength = opt.axis == 'y' ? opt.length - position : position;
-					inVal += opt.min;
-					
-					var animNum = function ()
-					{
-						if(cVal == inVal)
-						{
-							clearInterval(anim);
-						}
-						else
-						{
-							cVal += cVal < inVal ? opt.step : opt.step * -1;
-							$number.text(arrayVal(cVal));
-							callback(cVal, 'onMove');
-						}
-					}
-					
-					$(this).data({'status' : 'moving'});
-					
-					if(inVal >=  opt.min && opt.axis == 'y' && inVal <= opt.max)
-					{
-						$thumb.animate({top : position }, opt.speed);
-						$number.animate({top : position }, opt.speed, function () { callback(inVal, 'onFinish') });
-						$progressBar.animate({top : position, height : pLength }, opt.speed, function () 
-						{ 
-							$rail.data({'status' : 'ready'}) 
-							
-							if(opt.axis == 'y')
-							{
-								if(position <= opt.length * opt.flip || range == 0)
-									$number.addClass('pS-flipped');
-								else
-									$number.removeClass('pS-flipped');
-							}
-						});
-					}
-					
-					if(inVal >=  opt.min && opt.axis == 'x' && inVal <= opt.max)
-					{			
-						$thumb.animate({left : position }, opt.speed);
-						$number.animate({left : position }, opt.speed, function () { callback(inVal, 'onFinish') });
-						$progressBar.animate({width : pLength }, opt.speed, function () 
-						{ 
-							$rail.data({'status' : 'ready'}) 
-						});
-					}
-					
-					if(opt.animate)
-					{
-						var len = Math.abs(cVal - inVal);
-						anim = setInterval(animNum, opt.speed / len);
+						var position = positions[i];
+						var value = values[i];
+						break;
 					}
 					else
 					{
-						$number.text(arrayVal(inVal));
+						continue;
 					}
+				}
+			}
+			
+			if(opt.animate && call == 'onFinish')
+			{
+				animateSlider(position, value, call);
+			}
+			else
+			{
+				setSlider(position, value, call);
+			}
+		};
+		
+		animateSlider = function (position, value, call)
+		{
+			var cVal = data.value;
+			position = position * tAdjust;
+					
+			_animNum = function ()
+			{
+				if(cVal == value)
+				{
+					clearInterval(anim);
+				}
+				else
+				{
+					cVal += cVal < value ? opt.step : opt.step * -1;
+					$number.text(arrayVal(value));
+					callback(cVal, position, 'onMove');
+				}
+			}
+			
+			if(opt.axis == 'y')
+			{
+				$thumb.animate({bottom : position + '%'}, opt.speed);
+				$number.animate({bottom : position + '%'}, opt.speed)
+				$progressBar.animate({height : position + '%'}, opt.speed);
+			}
+			else
+			{
+				$thumb.animate({left : position + '%'}, opt.speed);
+				$number.animate({bottom : position + '%'}, opt.speed)
+				$progressBar.animate({width : position + '%'}, opt.speed);
+			}
+			
+			var len = Math.abs(cVal - value);
+			anim = setInterval(_animNum, opt.speed / len);
+			
+			if($rail.data('status') == 'moving')
+			{
+				$rail.data({'status' : 'ready'});
+			}
+			
+			callback(value, position, call);
+		}
+		
+		setSlider = function (position, value, call)
+		{
+			position = position * tAdjust;
+		
+			if(opt.axis == 'y')
+			{
+				$thumb.css({bottom : position + '%'});
+				$number.css({bottom : position + '%'}).text(arrayVal(value));
+				$progressBar.css({height : position + '%'});
+			}
+			else
+			{
+				$thumb.css({left : position + '%'});
+				$number.css({left : position + '%'}).text(value);
+				$progressBar.css({width : position + '%'});
+			}
+			
+			if($rail.data('status') == 'moving')
+			{
+				$rail.data({'status' : 'ready'});
+			}
+			
+			callback(value, position, call)
+		};
+		
+		handlers = {
+			onRailClick : function (e)
+			{
+			
+				if($(this).data('status') == 'ready' && $thumb.data('status') == 'ready')
+				{
+					$(this).data({'status' : 'moving'});
+					var position = opt.axis == 'y' ? (opt.length - (e.pageY - $rail.offset().top)) * 100 : (opt.length - (e.pageX - $rail.offset().left)) * 100;
+					
+					dataController(position, 'onFinish');
 				}
 				return false;
 			},
@@ -238,43 +279,11 @@ $.fn.pSlider = function ( option ) {
 					}
 				}
 				
-				position = opt.axis == 'y' ? e.pageY - $rail.offset().top : e.pageX - $rail.offset().left;
-				val = (Math.floor((position * range)/opt.length / opt.step)) * opt.step;
+				$(this).data({'status' : 'moving'});
 				
-				inVal = opt.axis == 'y' ? Math.abs(val - range) : val;
-				position = Math.floor(Math.floor((val * opt.length)/range) * tAdjust);
+				var position = opt.axis == 'y' ? (opt.length - (e.pageY - $rail.offset().top)) * 100 : (opt.length - (e.pageX - $rail.offset().left)) * 100;
 					
-				inVal += opt.min;
-					
-				if(position < 0)
-				{
-					position = 0;
-					inVal = opt.axis == 'y' ? opt.max : opt.min;
-				};
-				
-				if(position > Math.floor(opt.length * tAdjust))
-				{
-					position = Math.floor(opt.length * tAdjust);
-					inVal = opt.axis == 'y' ? opt.min : opt.max;
-				};
-				
-					pLength = opt.axis == 'y' ? opt.length - position : position;
-				
-				if(opt.axis == 'y' && inVal >=  opt.min && inVal <=  opt.max)
-				{
-					$thumb.css({top : position });
-					$number.css({top : position }).text(arrayVal(inVal));
-					$progressBar.css({top : position, height : pLength });
-				}
-				
-				if(opt.axis == 'x' && inVal >=  opt.min && inVal <=  opt.max)
-				{
-					$thumb.css({left : position });
-					$number.css({left : position }).text(arrayVal(inVal));
-					$progressBar.css({width : pLength });
-				}
-				
-				callback(inVal, 'onMove');
+				dataController(position, 'onMove');
 				
 				$(document).bind('mouseup touchend', handlers.onMouseUp);
 			},
@@ -288,21 +297,11 @@ $.fn.pSlider = function ( option ) {
 				
 				$thumb.removeClass('pS-dragging');
 					
-				if(opt.axis == 'y')
-				{
-					if(position <= opt.length * opt.flip || range == 0)
-						$number.addClass('pS-flipped');
-					else
-						$number.removeClass('pS-flipped');
-				}
-				
 				$rail.unbind('mousemove');
 				$(this).unbind('mouseup touchend');
 				
 				// prevent iPhone from triggering click event
 				setTimeout( function () { $thumb.data({'status' : 'ready'}) }, 1000);
-				
-				callback(inVal, 'onFinish');
 			},
 			
 			onArrowClick : function (e)
@@ -357,55 +356,27 @@ $.fn.pSlider = function ( option ) {
 				return;
 			}
 				
-			var val = data.value;
-		
-			if(direction == 'up' && val < opt.max) 
+			var value = data.value;
+			
+			if(direction == 'up' && value < opt.max) 
 			{
-				val += opt.step;
+				dataController(positions[$.inArray(value, values) + 1] * opt.length, 'onFinish');
 			}
-			else if(direction == 'down' && val > opt.min)
+			else if(direction == 'down' && value > opt.min)
 			{
-				val -= opt.step;
+				dataController(positions[$.inArray(value, values) - 1] * opt.length, 'onFinish');
 			}
 			else
+			{
 				return;
-				
-			var inVal = opt.axis == 'y' ? Math.abs(val - opt.max) : val - opt.min;
-			
-				 
-			position = Math.floor(Math.floor((inVal * opt.length)/range) * tAdjust);
-			pLength = opt.axis == 'y' ? opt.length - position : position;
-			
-			if(opt.axis == 'y')
-			{
-				if(position <= opt.length * opt.flip || range == 0)
-					$number.addClass('pS-flipped');
-				else
-					$number.removeClass('pS-flipped');
 			}
-				
-			if(opt.axis == 'y')
-			{
-				$thumb.css({top : position });
-				$number.css({top : position }).text(arrayVal(val));
-				$progressBar.css({top : position, height : pLength });
-			}
-			
-			if(opt.axis == 'x')
-			{
-				$thumb.css({left : position });
-				$number.css({left : position }).text(arrayVal(val));
-				$progressBar.css({width : pLength });
-			}
-			
-			callback(val, 'onFinish');
 			
 			return false;
 		};
 		
 		// update public dataset 
 		
-		callback = function (value, call) {
+		callback = function (value, position, call) {
 			data = {
 				value : value,
 				arrayValue : $.isArray(opt.array) ? arrayVal(value) : ''
