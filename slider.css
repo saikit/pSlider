@@ -4,8 +4,13 @@ body {
 	font-family:Cambria, "Times New Roman", serif;
 }
 
+h1 {
+	text-align:center;
+}
+
 p {
 	clear: both;
+	text-align:center
 }
 
 .pS-slider {
