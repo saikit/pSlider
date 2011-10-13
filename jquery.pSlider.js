@@ -1,12 +1,12 @@
 /*
 
 pSlider : a jQuery slider plugin for desktop and mobile websites.
-Author : Sai-Kit Hui
-Website : http://areyoudesign.com
+Author : Sai-Kit Hui (@saikit)
+Website : http://areyoudesign.com/blog
 
 */
 
-(function ( $ ) {
+;(function ( $, window, document, undefined ) {
 
 $.fn.pSlider = function ( option ) {
 	
@@ -14,24 +14,25 @@ $.fn.pSlider = function ( option ) {
 	$.event.props.push('touches', 'targetTouches', 'changedTouches');
 	
 	var defaults = {
-		axis : 'y', // 'x' for horizontal, 'y' for vertical slider
+		axis : 'y', // 'x' for horizontal slider, 'y' for vertical slider
 		min: 0, // minimum value
 		max: 100, // maximim value
 		value: 25, // default value on load, should be a multiple of the min and max.
 		step: 1, // set increments each step
-		length: 200, // set the width/height of the progress bar
+		length: 200, // set the width/height of the progress bar (px)
 		animate: false, // set whether to animate value
-		speed: 200, // animation speed for click event
-		thumb: 36, // size of the thumb
+		animSpeed: 200, // animation speed for click event (ms)
+		arrowSpeed: 200, // set the interval for holding down the arrow buttons (ms)
+		thumb: 36, // size of the thumb (px)
 		flip: 0, // percentage value the number is in a flipped state
 		array: [], // display values matched against an array
-		onLoad: {}, // callback function after loading slider
+		onLoad: {}, // callback function after initializing slider
 		onMove: {}, // callback function that run while slider in motion
-		onFinish: {} // callback function that run after each action
+		onFinish: {} // callback function that run after end of each action
 	}
 	
 	var opt = $.extend( defaults, option );
-	var timer = 0;
+	var timer = 0; // define setInterval
 	var int = false; // flag that starts and stop the onArrowClick handler
 	
 	/* jQuery objects */ 
@@ -45,21 +46,21 @@ $.fn.pSlider = function ( option ) {
 		
 	/* constants and measurements */	
 		
-	var range = opt.max - opt.min,
-		indexes = range/opt.step;
-		tAdjust = (opt.length - opt.thumb) / opt.length,
-		values = [opt.min];
-		positions = [];
+	var range = opt.max - opt.min, // 
+		indexes = range/opt.step,
+		tAdjust = (opt.length - opt.thumb) / opt.length; // adjusting position so that slider is correctly positioned depending on size
 		
+	var values = [opt.min];
 		for(i = 0, len = indexes; i<len; i++)
 		{
 			values[i + 1] = values[i] + opt.step;
 		};
 		
+	var positions = [];
 		for(i = 0, len = indexes; i<=len; i++)
 		{
 			positions[i] = (i/indexes) * 100;
-		}
+		};
 		
 	var data = {}; // object of slider data that can be accessed by the callback function
 		
@@ -167,29 +168,30 @@ $.fn.pSlider = function ( option ) {
 				}
 				else
 				{
-					sAdjust = Math.abs(cVal - value) < 10 ? 1 : Math.round(len/10);
-					cVal += cVal < value ? opt.step * sAdjust : opt.step * -1 * sAdjust;
+					len = Math.abs(cVal - value)
+					var _sAdjust = len < 10 ? 1 : Math.round(len/10);
+					cVal += cVal < value ? opt.step * _sAdjust : opt.step * -1 * _sAdjust;
 					$number.text(arrayVal(index, cVal));
-					callback(cVal, position, 'onMove');
+					callback(cVal, position, index, 'onMove');
 				}
 			}
 			
 			var cVal = data.value,
 				len = Math.abs(cVal - value),
-				animSpeed = opt.speed/len;
+				animSpeed = opt.animSpeed/len,
 				anim = setInterval(_animNum, animSpeed);
 			
 			if(opt.axis == 'y')
 			{
-				$thumb.animate({bottom : position + '%'}, opt.speed);
-				$number.animate({bottom : position + '%'}, opt.speed)
-				$progressBar.animate({height : position + '%'}, opt.speed);
+				$thumb.animate({bottom : position + '%'}, opt.animSpeed);
+				$number.animate({bottom : position + '%'}, opt.animSpeed)
+				$progressBar.animate({height : position + '%'}, opt.animSpeed);
 			}
 			else
 			{
-				$thumb.animate({left : position + '%'}, opt.speed);
-				$number.animate({bottom : position + '%'}, opt.speed)
-				$progressBar.animate({width : position + '%'}, opt.speed);
+				$thumb.animate({left : position + '%'}, opt.animSpeed);
+				$number.animate({bottom : position + '%'}, opt.animSpeed)
+				$progressBar.animate({width : position + '%'}, opt.animSpeed);
 			}
 			
 			if(opt.flip && position >= opt.flip)
@@ -201,7 +203,7 @@ $.fn.pSlider = function ( option ) {
 				$number.removeClass('pS-flipped');
 			};
 			
-			callback(value, position, call);
+			callback(value, position, index, call);
 		}
 		
 		setSlider = function (position, value, index, call)
@@ -229,13 +231,12 @@ $.fn.pSlider = function ( option ) {
 			};
 			
 			$rail.data({'status' : 'ready'});
-			callback(value, position, call)
+			callback(value, position, index, call)
 		};
 		
 		handlers = {
 			onRailClick : function (e)
 			{
-			
 				if($(this).data('status') == 'ready' && $thumb.data('status') == 'ready')
 				{
 					$(this).data({'status' : 'moving'});
@@ -295,6 +296,8 @@ $.fn.pSlider = function ( option ) {
 				var position = opt.axis == 'y' ? (opt.length - (e.pageY - $rail.offset().top)) * 100 : (opt.length - (e.pageX - $rail.offset().left)) * 100;
 					
 				dataController(position, 'onMove');
+				
+				// add mouseup on any part of document
 				
 				$(document).bind('mouseup touchend', handlers.onMouseUp);
 			},
@@ -361,7 +364,7 @@ $.fn.pSlider = function ( option ) {
 			clearInterval(timer);
 			
 			if(int == true && direction)
-				timer = setInterval( function () { plusVal(obj, direction) }, 200 );
+				timer = setInterval( function () { plusVal(obj, direction) }, opt.arrowSpeed );
 			else
 			{
 				obj.removeClass('pS-arrowDown');
@@ -388,11 +391,13 @@ $.fn.pSlider = function ( option ) {
 		
 		// update public dataset 
 		
-		callback = function (value, position, call) {
+		callback = function (value, position, index, call) {
 			data = {
 				value : value,
-				arrayValue : $.isArray(opt.array) ? arrayVal(value) : ''
-			}
+				arrayValue : $.isArray(opt.array) ? arrayVal(value) : '',
+				percentage : Math.round(position),
+				index : index
+			};
 			
 			opt[call].call(this, data);
 		};
@@ -409,4 +414,4 @@ $.fn.pSlider = function ( option ) {
 	});		 
 }
 	
-})( jQuery );
+})( jQuery, window, document );
