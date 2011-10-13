@@ -92,7 +92,7 @@ $.fn.pSlider = function ( option ) {
 				$rail.css({height : opt.length});
 				$thumb.css({height: opt.thumb});
 			}
-			if(opt.axis == 'x')
+			else // opt.axis == 'x'
 			{
 				$rail.css({width : opt.length});
 				$thumb.css({width : opt.thumb});	
@@ -146,7 +146,7 @@ $.fn.pSlider = function ( option ) {
 			
 			position = position * tAdjust;
 			
-			if(opt.animate && call == 'onFinish')
+			if(opt.animate && call == 'onFinish' && int == false)
 			{
 				animateSlider(position, value, index, call);
 			}
@@ -157,9 +157,7 @@ $.fn.pSlider = function ( option ) {
 		};
 		
 		animateSlider = function (position, value, index, call)
-		{
-			var cVal = data.value;
-					
+		{	
 			_animNum = function ()
 			{
 				if(cVal == value)
@@ -169,10 +167,15 @@ $.fn.pSlider = function ( option ) {
 				else
 				{
 					cVal += cVal < value ? opt.step : opt.step * -1;
-					$number.text(arrayVal(index, value));
+					$number.text(arrayVal(index, cVal));
 					callback(cVal, position, 'onMove');
 				}
 			}
+			
+			var cVal = data.value,
+				len = Math.abs(cVal - value),
+				animSpeed = opt.speed/len;
+				anim = setInterval(_animNum, animSpeed);
 			
 			if(opt.axis == 'y')
 			{
@@ -186,9 +189,6 @@ $.fn.pSlider = function ( option ) {
 				$number.animate({bottom : position + '%'}, opt.speed)
 				$progressBar.animate({width : position + '%'}, opt.speed);
 			}
-			
-			var len = Math.abs(cVal - value);
-			anim = setInterval(_animNum, opt.speed / len);
 			
 			if($rail.data('status') == 'moving')
 			{
@@ -343,7 +343,8 @@ $.fn.pSlider = function ( option ) {
 			
 		};
 		
-		// transforms number display depending on type
+		/* Convert values based onanother array of values. 
+		*/
 		
 		arrayVal = function ( index, value )
 		{

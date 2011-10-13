@@ -13,13 +13,14 @@ $(function ()
 {
 	$('#slider').pSlider({
 			axis : 'y',
-			min : -100,
-			max : 100,
+			min : 1,
+			max : 1000,
 			value : 20,
 			length: 336,
-			step: 5,
+			step: 1,
 			thumb: 38,
 			flip: 80,
+			animate: true,
 			onLoad : function (response)
 			{
 				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p>').insertAfter('#slider');
