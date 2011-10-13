@@ -159,14 +159,16 @@ $.fn.pSlider = function ( option ) {
 		animateSlider = function (position, value, index, call)
 		{	
 			_animNum = function ()
-			{
+			{	
 				if(cVal == value)
 				{
 					clearInterval(anim);
+					$rail.data({'status' : 'ready'});
 				}
 				else
 				{
-					cVal += cVal < value ? opt.step : opt.step * -1;
+					sAdjust = Math.abs(cVal - value) < 10 ? 1 : Math.round(len/10);
+					cVal += cVal < value ? opt.step * sAdjust : opt.step * -1 * sAdjust;
 					$number.text(arrayVal(index, cVal));
 					callback(cVal, position, 'onMove');
 				}
@@ -189,11 +191,6 @@ $.fn.pSlider = function ( option ) {
 				$number.animate({bottom : position + '%'}, opt.speed)
 				$progressBar.animate({width : position + '%'}, opt.speed);
 			}
-			
-			if($rail.data('status') == 'moving')
-			{
-				$rail.data({'status' : 'ready'});
-			};
 			
 			if(opt.flip && position >= opt.flip)
 			{
@@ -222,11 +219,6 @@ $.fn.pSlider = function ( option ) {
 				$progressBar.css({width : position + '%'});
 			};
 			
-			if($rail.data('status') == 'moving')
-			{
-				$rail.data({'status' : 'ready'});
-			};
-			
 			if(opt.flip && position >= opt.flip)
 			{
 				$number.addClass('pS-flipped');
@@ -236,6 +228,7 @@ $.fn.pSlider = function ( option ) {
 				$number.removeClass('pS-flipped');
 			};
 			
+			$rail.data({'status' : 'ready'});
 			callback(value, position, call)
 		};
 		
