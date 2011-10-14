@@ -20,21 +20,23 @@ $(function ()
 			step: 5,
 			thumb: 38,
 			flip: 80,
+			arrowSpeed: 50,
 			animate: true,
 			onLoad : function (response)
 			{
-				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p>').insertAfter('#slider');
+				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p><p>The slider percentage is <span id="percent">'+ response.percentage +'</span>%</p>').insertAfter('#slider');
 			},
 			onMove : function (response)
 			{
 				$('#value').text(response.value);
+				$('#percent').text(response.percentage);
 			},
 			onFinish : function (response)
 			{
 				$('#value').text(response.value);
+				$('#percent').text(response.percentage);
 			}
-		});
-	
+	});
 });
 </script>
 </head>

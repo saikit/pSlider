@@ -24,7 +24,7 @@ $.fn.pSlider = function ( option ) {
 		animSpeed: 200, // animation speed for click event (ms)
 		arrowSpeed: 200, // set the interval for holding down the arrow buttons (ms)
 		thumb: 36, // size of the thumb (px)
-		flip: 0, // percentage value the number is in a flipped state
+		flip: null, // percentage value the number is in a flipped state
 		array: [], // display values matched against an array
 		onLoad: {}, // callback function after initializing slider
 		onMove: {}, // callback function that run while slider in motion
@@ -154,7 +154,7 @@ $.fn.pSlider = function ( option ) {
 			else
 			{
 				setSlider(position, value, index, call);
-			}
+			};
 		};
 		
 		animateSlider = function (position, value, index, call)
@@ -273,7 +273,7 @@ $.fn.pSlider = function ( option ) {
 					
 				// add mousemove
 					
-				$rail.bind('mousemove touchmove', handlers.onRailMove);
+				$(document).bind('mousemove touchmove', handlers.onRailMove);
 			},
 			
 			onRailMove : function (e)
@@ -291,7 +291,7 @@ $.fn.pSlider = function ( option ) {
 					}
 				}
 				
-				$(this).data({'status' : 'moving'});
+				$rail.data({'status' : 'moving'});
 				
 				var position = opt.axis == 'y' ? (opt.length - (e.pageY - $rail.offset().top)) * 100 : (opt.length - (e.pageX - $rail.offset().left)) * 100;
 					
@@ -299,20 +299,21 @@ $.fn.pSlider = function ( option ) {
 				
 				// add mouseup on any part of document
 				
-				$(document).bind('mouseup touchend', handlers.onMouseUp);
+				$(this).bind('mouseup touchend', handlers.onMouseUp);
 			},
 			
 			onMouseUp : function (e) 
 			{
 				if(e.type == 'touchend')
 				{
-					$rail.unbind('touchmove');
+					$(this).unbind('touchmove touchend');
 				}
+				else
+				{
+					$(this).unbind('mouseup mousemove');
+				};
 				
 				$thumb.removeClass('pS-dragging');
-					
-				$rail.unbind('mousemove');
-				$(this).unbind('mouseup touchend');
 				
 				// prevent iPhone from triggering click event
 				setTimeout( function () { $thumb.data({'status' : 'ready'}) }, 1000);
@@ -395,7 +396,7 @@ $.fn.pSlider = function ( option ) {
 			data = {
 				value : value,
 				arrayValue : $.isArray(opt.array) ? arrayVal(value) : '',
-				percentage : Math.round(position),
+				percentage : Math.round(position / tAdjust),
 				index : index
 			};
 			
