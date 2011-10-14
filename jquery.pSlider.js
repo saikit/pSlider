@@ -46,17 +46,17 @@ $.fn.pSlider = function ( option ) {
 		
 	/* constants and measurements */	
 		
-	var range = opt.max - opt.min, // 
-		indexes = range/opt.step,
+	var range = opt.max - opt.min, // the range
+		indexes = range/opt.step, // total number of positions in a slider
 		tAdjust = (opt.length - opt.thumb) / opt.length; // adjusting position so that slider is correctly positioned depending on size
 		
-	var values = [opt.min];
+	var values = [opt.min]; // array of values in a slider, starting with opt.min
 		for(i = 0, len = indexes; i<len; i++)
 		{
 			values[i + 1] = values[i] + opt.step;
 		};
 		
-	var positions = [];
+	var positions = []; // array of positions in a slider, set by percentage
 		for(i = 0, len = indexes; i<=len; i++)
 		{
 			positions[i] = (i/indexes) * 100;
@@ -71,6 +71,8 @@ $.fn.pSlider = function ( option ) {
 			buildSlider();
 			initListeners();
 		};
+		
+		/* construct slider */
 		
 		buildSlider = function()
 		{
@@ -111,6 +113,8 @@ $.fn.pSlider = function ( option ) {
 			$down.bind('mousedown touchstart', {direction : 'down'}, handlers.onArrowClick);
 		};
 		
+		// all handlers use this to output slider position, value, and index
+		
 		dataController = function (coordinate, call)
 		{
 			coordinate = coordinate/opt.length;
@@ -145,6 +149,8 @@ $.fn.pSlider = function ( option ) {
 				}
 			}
 			
+			// position adjusted for slider
+			
 			position = position * tAdjust;
 			
 			if(opt.animate && call == 'onFinish' && int == false)
@@ -156,6 +162,8 @@ $.fn.pSlider = function ( option ) {
 				setSlider(position, value, index, call);
 			};
 		};
+		
+		// animation from clicking on rail
 		
 		animateSlider = function (position, value, index, call)
 		{	
@@ -340,8 +348,7 @@ $.fn.pSlider = function ( option ) {
 			
 		};
 		
-		/* Convert values based onanother array of values. 
-		*/
+		// Convert values based onanother array of values. 
 		
 		arrayVal = function ( index, value )
 		{
@@ -390,7 +397,7 @@ $.fn.pSlider = function ( option ) {
 			return false;
 		};
 		
-		// update public dataset 
+		// update public dataset and run callback function
 		
 		callback = function (value, position, index, call) {
 			data = {
