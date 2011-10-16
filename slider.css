@@ -13,8 +13,11 @@ p {
 	text-align:center
 }
 
-#slider {
+#slider1, #slider2 {
 	overflow: hidden;
+	width: 50%;
+	display: inline-block;
+	float:left;
 }
 
 .pS-slider {
@@ -50,6 +53,7 @@ p {
 
 .pS-rail .pS-thumb {
 	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#eee), to(#aaa));
+	background:-moz-linear-gradient(0% 0% 180deg,#eee, #aaa);
 	border-radius:12px;
 	height:38px;
 	width:37px;
@@ -100,11 +104,13 @@ p {
 
 .pS-btn-up {
 	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#666));
+	background:-moz-linear-gradient(0% 0% 180deg,#333, #666);
 	border-radius:15px 0 0 15px;
 }
 
 .pS-btn-down {
 	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#343434), to(#656565));
+	background:-moz-linear-gradient(0% 0% 180deg,#343434, #656565);
 	border-radius:0 15px 15px 0;
 }
 
