@@ -14,10 +14,6 @@ p {
 }
 
 #slider1, #slider2 {
-	overflow: hidden;
-	width: 50%;
-	display: inline-block;
-	float:left;
 }
 
 .pS-slider {
@@ -122,6 +118,10 @@ p {
 	clear:both;
 	width:200px;
 	margin:0 auto 10px;
+}
+
+.pS-dragging {
+	box-shadow: 5px 5px 5px #b22222;
 }
 
 /* axis specific attributes */
