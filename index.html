@@ -11,7 +11,8 @@
 <script type="text/javascript">
 $(function () 
 {
-	$('#slider').pSlider({
+	$('#slider1').pSlider();
+	$('#slider2').pSlider({
 			axis : 'y',
 			min : 0,
 			max : 10000,
@@ -24,7 +25,7 @@ $(function ()
 			animate: true,
 			onLoad : function (response)
 			{
-				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p><p>The slider percentage is <span id="percent">'+ response.percentage +'</span>%</p>').insertAfter('#slider');
+				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p><p>The slider percentage is <span id="percent">'+ response.percentage +'</span>%</p>').insertAfter('#slider2');
 			},
 			onMove : function (response)
 			{
@@ -44,7 +45,8 @@ $(function ()
 <body>
 <h1>pSlider</h1>
 <p>A jQuery slider plugin for desktop and mobile browsers. Written by Sai-Kit Hui (<a href="http://twitter.com/#!/saikit">@saikit</a>) Project page is hosted at <a href="https://github.com/saikit/pSlider">https://github.com/saikit/pSlider</a> </p>
-<div id="slider"></div>
+<div id="slider1"></div>
+<div id="slider2"></div>
 
 </body>
 </html>
