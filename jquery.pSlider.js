@@ -45,47 +45,41 @@ $.fn.pSlider = function ( option ) {
 			tAdjust = (opt.length - opt.thumb) / opt.length; // adjusting position so that slider is correctly positioned depending on size
 			
 		var values = [opt.min]; // array of values in a slider, starting with opt.min
-			for(i = 0, len = indexes; i<len; i++)
-			{
+			for(i = 0, len = indexes; i<len; i++) {
 				values[i + 1] = values[i] + opt.step;
 			};
 			
 		var positions = []; // array of positions in a slider, set by percentage
-			for(i = 0, len = indexes; i<=len; i++)
-			{
+			for(i = 0, len = indexes; i<=len; i++) {
 				positions[i] = (i/indexes) * 100;
 			};
 			
 		var data = {}; // object of slider data that can be accessed by the callback function
 		
-		init = function ()
-		{
+		init = function () {
 			buildSlider();
 			initListeners();
 		};
 		
 		/* construct slider */
 		
-		buildSlider = function()
-		{
+		buildSlider = function() {
 			$slider = $('<span class="pS-slider">'); 
 			$rail = $('<span class="pS-rail">').data({'status': 'ready'}).appendTo($slider);
-			$thumb = $('<span class="pS-thumb">').data({'status': 'ready'}).appendTo($rail);
-			$progressBar = $('<span class="pS-progressBar">').appendTo($rail);
-			$number = $('<span class="pS-number">').appendTo($rail);
-			$cap = $('<span class="pS-cap-min"></span><span class="pS-cap-max"></span>').appendTo($rail);
+			$thumb = $('<span class="pS-thumb">').data({'status': 'ready'}).appendTo(this.$rail);
+			$progressBar = $('<span class="pS-progressBar">').appendTo(this.$rail);
+			$number = $('<span class="pS-number">').appendTo(this.$rail);
+			$cap = $('<span class="pS-cap-min"></span><span class="pS-cap-max"></span>').appendTo(this.$rail);
 			$arrows = $('<div class="pS-arrows">').appendTo($slider);
 			$up = $('<span class="pS-btn pS-btn-up">+</span>').appendTo($arrows);
 			$down = $('<span class="pS-btn pS-btn-down">&ndash;</span>').appendTo($arrows);				
 			
-			if(opt.axis == 'y')
-			{
+			if(opt.axis == 'y') {
 				$slider.addClass('pS-slider-y')
 				$rail.css({height : opt.length});
 				$thumb.css({height: opt.thumb});
 			}
-			else // opt.axis == 'x'
-			{
+			else { // opt.axis == 'x' 
 				$slider.addClass('pS-slider-x')
 				$rail.css({width : opt.length});
 				$thumb.css({width : opt.thumb});	
@@ -96,8 +90,7 @@ $.fn.pSlider = function ( option ) {
 			$el.html($slider);
 		};
 		
-		initListeners = function ()
-		{
+		initListeners = function () {
 			$rail.click(handlers.onRailClick);
 			$thumb.bind('mousedown touchstart click', handlers.onThumbDrag);
 			$number.bind('touchstart mousedown select', handlers.onThumbDrag);			
@@ -107,35 +100,28 @@ $.fn.pSlider = function ( option ) {
 		
 		// all handlers use this to output slider position, value, and index
 		
-		dataController = function (coordinate, call)
-		{
+		dataController = function (coordinate, call) {
 			coordinate = coordinate/opt.length;
 			
-			if(coordinate < 0)
-			{
+			if(coordinate < 0) {
 				var position = positions[0];
 				var value = values[0];
 				var index = 0;
 			}
-			else if(coordinate >= 100)
-			{
+			else if(coordinate >= 100) {
 				var position = positions[indexes];
 				var value = values[indexes];
 				var index = indexes;
 			}
-			else
-			{
-				for(i = 0, len = indexes; i<len; i++)
-				{
-					if(coordinate - positions[i] < 1/indexes || coordinate - positions[i] == 0)
-					{
+			else {
+				for(i = 0, len = indexes; i<len; i++) {
+					if(coordinate - positions[i] < 1/indexes || coordinate - positions[i] == 0) {
 						var position = positions[i];
 						var value = values[i];
 						var index = i;
 						break;
 					}
-					else
-					{
+					else {
 						continue;
 					}
 				}
@@ -145,29 +131,23 @@ $.fn.pSlider = function ( option ) {
 			
 			position = position * tAdjust;
 			
-			if(opt.animate && call == 'onFinish' && int == false)
-			{
+			if(opt.animate && call == 'onFinish' && int == false) {
 				animateSlider(position, value, index, call);
 			}
-			else
-			{
+			else {
 				setSlider(position, value, index, call);
 			};
 		};
 		
 		// animation from clicking on rail
 		
-		animateSlider = function (position, value, index, call)
-		{
-			_animNum = function ()
-			{	
-				if(cVal == value)
-				{
+		animateSlider = function (position, value, index, call) {
+			_animNum = function () {	
+				if(cVal == value) {
 					clearInterval(anim);
 					$rail.data({'status' : 'ready'});
 				}
-				else
-				{
+				else {
 					len = Math.abs(cVal - value)
 					var _sAdjust = len < 10 ? 1 : Math.round(len/10);
 					cVal += cVal < value ? opt.step * _sAdjust : opt.step * -1 * _sAdjust;
@@ -181,25 +161,21 @@ $.fn.pSlider = function ( option ) {
 				animSpeed = opt.animSpeed/len,
 				anim = setInterval(_animNum, animSpeed);
 			
-			if(opt.axis == 'y')
-			{
+			if(opt.axis == 'y') {
 				$thumb.animate({bottom : position + '%'}, opt.animSpeed);
 				$number.animate({bottom : position + '%'}, opt.animSpeed)
 				$progressBar.animate({height : position + '%'}, opt.animSpeed);
 			}
-			else
-			{
+			else {
 				$thumb.animate({left : position + '%'}, opt.animSpeed);
 				$number.animate({bottom : position + '%'}, opt.animSpeed)
 				$progressBar.animate({width : position + '%'}, opt.animSpeed);
 			}
 			
-			if(opt.flip && position >= opt.flip)
-			{
+			if(opt.flip && position >= opt.flip) {
 				$number.addClass('pS-flipped');
 			}
-			else
-			{
+			else {
 				$number.removeClass('pS-flipped');
 			};
 			
@@ -208,25 +184,21 @@ $.fn.pSlider = function ( option ) {
 		
 		setSlider = function (position, value, index, call)
 		{
-			if(opt.axis == 'y')
-			{
+			if(opt.axis == 'y') {
 				$thumb.css({bottom : position + '%'});
 				$number.css({bottom : position + '%'}).text(arrayVal(index, value));
 				$progressBar.css({height : position + '%'});
 			}
-			else
-			{
+			else {
 				$thumb.css({left : position + '%'});
 				$number.css({left : position + '%'}).text(arrayVal(index, value));
 				$progressBar.css({width : position + '%'});
 			};
 			
-			if(opt.flip && position >= opt.flip)
-			{
+			if(opt.flip && position >= opt.flip) {
 				$number.addClass('pS-flipped');
 			}
-			else
-			{
+			else {
 				$number.removeClass('pS-flipped');
 			};
 			
@@ -235,10 +207,8 @@ $.fn.pSlider = function ( option ) {
 		};
 		
 		handlers = {
-			onRailClick : function (e)
-			{
-				if($(this).data('status') == 'ready' && $thumb.data('status') == 'ready')
-				{
+			onRailClick : function (e) {
+				if($(this).data('status') == 'ready' && $thumb.data('status') == 'ready') {
 					$(this).data({'status' : 'moving'});
 					var position = opt.axis == 'y' ? (opt.length - (e.pageY - $rail.offset().top)) * 100 : (opt.length - (e.pageX - $rail.offset().left)) * 100;
 					dataController(position, 'onFinish');
@@ -246,18 +216,15 @@ $.fn.pSlider = function ( option ) {
 				return false;
 			},
 			
-			onThumbDrag : function (e)
-			{
+			onThumbDrag : function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				
 				$(this).data({'status' : 'moving'});
-				if(e.type == 'click' || e.type == 'select')
-				{	
+				if(e.type == 'click' || e.type == 'select') {	
 					return false;
 				};
-				if(e.type == 'touchstart')
-				{
+				if(e.type == 'touchstart') {
 					$(this).unbind('mousedown');
 					if(e.touches) {                                                                          
 						if(e.targetTouches && e.targetTouches.length != 1) {                                        
@@ -273,12 +240,10 @@ $.fn.pSlider = function ( option ) {
 				$(document).bind('mousemove touchmove', handlers.onRailMove);
 			},
 			
-			onRailMove : function (e)
-			{
+			onRailMove : function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				if(e.type == 'touchmove')
-				{
+				if(e.type == 'touchmove') {
 					if(e.touches) {                                                                          
 						if(e.targetTouches && e.targetTouches.length != 1) {                                        
 							return false;
@@ -299,14 +264,11 @@ $.fn.pSlider = function ( option ) {
 				$(this).bind('mouseup touchend', handlers.onMouseUp);
 			},
 			
-			onMouseUp : function (e) 
-			{
-				if(e.type == 'touchend')
-				{
+			onMouseUp : function (e) {
+				if(e.type == 'touchend') {
 					$(this).unbind('touchmove touchend');
 				}
-				else
-				{
+				else {
 					$(this).unbind('mouseup mousemove');
 				};
 				
@@ -316,8 +278,7 @@ $.fn.pSlider = function ( option ) {
 				setTimeout( function () { $thumb.data({'status' : 'ready'}) }, 1000);
 			},
 			
-			onArrowClick : function (e)
-			{
+			onArrowClick : function (e) {
 				$(this).addClass('pS-arrowDown');
 				
 				if(e.type == "touchstart")
@@ -330,8 +291,7 @@ $.fn.pSlider = function ( option ) {
 				
 			},
 			
-			onArrowRelease : function (e)
-			{
+			onArrowRelease : function (e) {
 				int = false;
 				$(this).unbind('mouseup touchend');
 			}
@@ -340,17 +300,14 @@ $.fn.pSlider = function ( option ) {
 		
 		// Convert values based onanother array of values. 
 		
-		arrayVal = function ( index, value )
-		{
-			if($.isArray(opt.array) && opt.array.length > 0)
-			{
+		arrayVal = function ( index, value ) {
+			if($.isArray(opt.array) && opt.array.length > 0) {
 				if(typeof(opt.array[index]) == 'undefined')
 					return opt.array[index % opt.array.length];
 				else		
 					return opt.array[index];
 			}	
-			else
-			{
+			else {
 				return value;
 			}
 		};
@@ -361,8 +318,9 @@ $.fn.pSlider = function ( option ) {
 		{	
 			clearInterval(timer);
 			
-			if(int == true && direction)
+			if(int == true && direction) {
 				timer = setInterval( function () { plusVal(obj, direction) }, opt.arrowSpeed );
+			}
 			else
 			{
 				obj.removeClass('pS-arrowDown');
@@ -371,16 +329,13 @@ $.fn.pSlider = function ( option ) {
 				
 			var value = data.value;
 			
-			if(direction == 'up' && value < opt.max) 
-			{
+			if(direction == 'up' && value < opt.max) {
 				dataController(positions[$.inArray(value, values) + 1] * opt.length, 'onFinish');
 			}
-			else if(direction == 'down' && value > opt.min)
-			{
+			else if(direction == 'down' && value > opt.min) {
 				dataController(positions[$.inArray(value, values) - 1] * opt.length, 'onFinish');
 			}
-			else
-			{
+			else {
 				return;
 			}
 			
