@@ -120,8 +120,9 @@ p {
 	margin:0 auto 10px;
 }
 
-.pS-dragging {
-	box-shadow: 5px 5px 5px #b22222;
+.pS-thumb.pS-dragging {
+	box-shadow: 0 0 15px #eee;
+	background: #ddd;
 }
 
 /* axis specific attributes */

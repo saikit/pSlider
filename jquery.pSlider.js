@@ -228,8 +228,8 @@ $.fn.pSlider = function ( option ) {
 			},
 			
 			onThumbDrag : function (e) {
-				e.preventDefault();
-				e.stopPropagation();
+				
+				$el.data('$thumb').addClass('pS-dragging');
 				
 				$(this).data({'status' : 'moving'});
 				if(e.type == 'click' || e.type == 'select') {	
@@ -246,16 +246,16 @@ $.fn.pSlider = function ( option ) {
 					};
 				}
 					
-				// add mousemove
-					
+				// allow mousemove on any part of the document	
 				$(document).bind('mousemove touchmove', {element: $el}, handlers.onRailMove);
+				
+				return false;
 			},
 			
 			onRailMove : function (e) {
 				var $el = e.data.element;
 					opt = $el.data('opt');
-				e.preventDefault();
-				e.stopPropagation();
+
 				if(e.type == 'touchmove') {
 					if(e.touches) {                                                                          
 						if(e.targetTouches && e.targetTouches.length != 1) {                                        
@@ -272,13 +272,15 @@ $.fn.pSlider = function ( option ) {
 					
 				dataController($el, position, 'onMove');
 				
-				// add mouseup on any part of document
+				// allow mouseup on any part of the document
 				
 				$(this).bind('mouseup touchend', {element: $el}, handlers.onMouseUp);
+				return false;
 			},
 			
 			onMouseUp : function (e) {
 				var $el = e.data.element;
+				$el.data('$thumb').removeClass('pS-dragging');
 				if(e.type == 'touchend') {
 					$(this).unbind('touchmove touchend');
 				}
@@ -286,7 +288,6 @@ $.fn.pSlider = function ( option ) {
 					$(this).unbind('mouseup mousemove');
 				};
 				
-				$el.data('$thumb').removeClass('pS-dragging');
 				
 				// prevent iPhone from triggering click event
 				setTimeout( function () { $el.data('$thumb').data({'status' : 'ready'}) }, 1000);
@@ -303,6 +304,8 @@ $.fn.pSlider = function ( option ) {
 				plusVal($el, $(this), e.data.direction)
 					
 				$(document).bind('mouseup touchend', handlers.onArrowRelease);
+				
+				return false;
 			},
 			
 			onArrowRelease : function (e) {
