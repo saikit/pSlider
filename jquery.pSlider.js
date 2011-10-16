@@ -77,8 +77,6 @@ $.fn.pSlider = function ( option ) {
 		buildSlider = function()
 		{
 			$slider = $('<span class="pS-slider">'); 
-
-			s.html($slider);
 			$rail = $('<span class="pS-rail">').data({'status': 'ready'}).appendTo($slider);
 			$thumb = $('<span class="pS-thumb">').data({'status': 'ready'}).appendTo($rail);
 			$progressBar = $('<span class="pS-progressBar">').appendTo($rail);
@@ -86,22 +84,24 @@ $.fn.pSlider = function ( option ) {
 			$cap = $('<span class="pS-cap-min"></span><span class="pS-cap-max"></span>').appendTo($rail);
 			$arrows = $('<div class="pS-arrows">').appendTo($slider);
 			$up = $('<span class="pS-btn pS-btn-up">+</span>').appendTo($arrows);
-			$down = $('<span class="pS-btn pS-btn-down">&ndash;</span>').appendTo($arrows);			
-
-			opt.axis == 'y' ? $slider.addClass('pS-slider-y') : $slider.addClass('pS-slider-x');			
+			$down = $('<span class="pS-btn pS-btn-down">&ndash;</span>').appendTo($arrows);				
 			
 			if(opt.axis == 'y')
 			{
+				$slider.addClass('pS-slider-y')
 				$rail.css({height : opt.length});
 				$thumb.css({height: opt.thumb});
 			}
 			else // opt.axis == 'x'
 			{
+				$slider.addClass('pS-slider-x')
 				$rail.css({width : opt.length});
 				$thumb.css({width : opt.thumb});	
 			}
 			
 			dataController(positions[$.inArray(opt.value, values)] * opt.length, 'onLoad');
+			
+			s.html($slider);
 		};
 		
 		initListeners = function ()
@@ -118,7 +118,7 @@ $.fn.pSlider = function ( option ) {
 		dataController = function (coordinate, call)
 		{
 			coordinate = coordinate/opt.length;
-		
+			
 			if(coordinate < 0)
 			{
 				var position = positions[0];
@@ -166,7 +166,7 @@ $.fn.pSlider = function ( option ) {
 		// animation from clicking on rail
 		
 		animateSlider = function (position, value, index, call)
-		{	
+		{
 			_animNum = function ()
 			{	
 				if(cVal == value)
@@ -249,7 +249,6 @@ $.fn.pSlider = function ( option ) {
 				{
 					$(this).data({'status' : 'moving'});
 					var position = opt.axis == 'y' ? (opt.length - (e.pageY - $rail.offset().top)) * 100 : (opt.length - (e.pageX - $rail.offset().left)) * 100;
-					
 					dataController(position, 'onFinish');
 				}
 				return false;
@@ -276,8 +275,6 @@ $.fn.pSlider = function ( option ) {
 						e = e.touches[0];                                                          
 					};
 				}
-				
-				$thumb.addClass('pS-dragging');
 					
 				// add mousemove
 					
@@ -338,6 +335,7 @@ $.fn.pSlider = function ( option ) {
 				plusVal($(this), e.data.direction)
 					
 				$(document).bind('mouseup touchend', handlers.onArrowRelease);
+				
 			},
 			
 			onArrowRelease : function (e)
@@ -407,7 +405,8 @@ $.fn.pSlider = function ( option ) {
 				index : index
 			};
 			
-			opt[call].call(this, data);
+			if(typeof(opt[call]) === 'function')
+				opt[call].call(this, data);
 		};
 	
 		return {
