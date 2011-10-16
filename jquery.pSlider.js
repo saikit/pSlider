@@ -8,8 +8,6 @@ Website : http://areyoudesign.com/blog
 
 ;(function ( $, window, document, undefined ) {
 
-$.fn.pSlider = function ( option ) {
-	
 	// Enable mobile events in jQuery
 	$.event.props.push('touches', 'targetTouches', 'changedTouches');
 	
@@ -30,41 +28,35 @@ $.fn.pSlider = function ( option ) {
 		onMove: {}, // callback function that run while slider in motion
 		onFinish: {} // callback function that run after end of each action
 	}
+
+$.fn.pSlider = function ( option ) {
 	
 	var opt = $.extend( defaults, option );
-	var timer = 0; // define setInterval
-	var int = false; // flag that starts and stop the onArrowClick handler
-	
-	/* jQuery objects */ 
-	var s = $(this), // the source element
-		$rail, // the track
-		$thumb, // the slider
-		$progressBar, // the progress track
-		$number, // the returned value
-		$up, // up arrow
-		$down; // down arrow
-		
-	/* constants and measurements */	
-		
-	var range = opt.max - opt.min, // the range
-		indexes = range/opt.step, // total number of positions in a slider
-		tAdjust = (opt.length - opt.thumb) / opt.length; // adjusting position so that slider is correctly positioned depending on size
-		
-	var values = [opt.min]; // array of values in a slider, starting with opt.min
-		for(i = 0, len = indexes; i<len; i++)
-		{
-			values[i + 1] = values[i] + opt.step;
-		};
-		
-	var positions = []; // array of positions in a slider, set by percentage
-		for(i = 0, len = indexes; i<=len; i++)
-		{
-			positions[i] = (i/indexes) * 100;
-		};
-		
-	var data = {}; // object of slider data that can be accessed by the callback function
-		
+	var $el = $(this);
+
 	var slider = (function() {
+	
+		/* constants and measurements */	
+		var timer = 0; // define setInterval
+		var int = false; // flag that starts and stop the onArrowClick handler
+			
+		var range = opt.max - opt.min, // the range
+			indexes = range/opt.step, // total number of positions in a slider
+			tAdjust = (opt.length - opt.thumb) / opt.length; // adjusting position so that slider is correctly positioned depending on size
+			
+		var values = [opt.min]; // array of values in a slider, starting with opt.min
+			for(i = 0, len = indexes; i<len; i++)
+			{
+				values[i + 1] = values[i] + opt.step;
+			};
+			
+		var positions = []; // array of positions in a slider, set by percentage
+			for(i = 0, len = indexes; i<=len; i++)
+			{
+				positions[i] = (i/indexes) * 100;
+			};
+			
+		var data = {}; // object of slider data that can be accessed by the callback function
 		
 		init = function ()
 		{
@@ -101,7 +93,7 @@ $.fn.pSlider = function ( option ) {
 			
 			dataController(positions[$.inArray(opt.value, values)] * opt.length, 'onLoad');
 			
-			s.html($slider);
+			$el.html($slider);
 		};
 		
 		initListeners = function ()
