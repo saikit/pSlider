@@ -71,8 +71,8 @@ $.fn.pSlider = function ( option ) {
 		
 			/* build the slider */
 			var $slider = $('<span class="pS-slider"></span>'),
-				$rail = $('<span class="pS-rail"></span>').data({'status': 'ready'}).appendTo($slider),
-				$thumb = $('<span class="pS-thumb"></span>').data({'status': 'ready'}).appendTo($rail),
+				$rail = $('<span class="pS-rail"></span>').appendTo($slider),
+				$thumb = $('<span class="pS-thumb"></span>').appendTo($rail),
 				$progressBar = $('<span class="pS-progressBar"></span>').appendTo($rail),
 				$number = $('<span class="pS-number"></span>').appendTo($rail),
 				$cap = $('<span class="pS-cap-min"></span><span class="pS-cap-max"></span>').appendTo($rail),
@@ -83,8 +83,8 @@ $.fn.pSlider = function ( option ) {
 			/* store slider components in data in order for reference */
 			$el.data({$thumb : $thumb, $rail : $rail, $up : $up, $down : $down, $number : $number, $progressBar : $progressBar, opt : opt});
 			
-			/* use the options stored in data */
-			opt = $el.data('opt');
+			$rail.data({'status': 'ready'});
+			$thumb.data({'status': 'ready'});
 					
 			if(opt.axis == 'y') {
 				$slider.addClass('pS-slider-y')
