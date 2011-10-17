@@ -23,6 +23,8 @@ Website : http://areyoudesign.com/blog
 		arrowSpeed: 200, // set the interval for holding down the arrow buttons (ms)
 		thumb: 36, // size of the thumb (px)
 		flip: 80, // percentage value the number is in a flipped state
+		plusText: '+', // text inside the up button
+		minusText: '&ndash;', //text inside the down button
 		array: [], // display values matched against an array
 		onLoad: {}, // callback function after initializing slider
 		onMove: {}, // callback function that run while slider in motion
@@ -68,15 +70,15 @@ $.fn.pSlider = function ( option ) {
 		
 		
 			/* build the slider */
-			var $slider = $('<span class="pS-slider">'),
-				$rail = $('<span class="pS-rail">').data({'status': 'ready'}).appendTo($slider),
-				$thumb = $('<span class="pS-thumb">').data({'status': 'ready'}).appendTo($rail),
-				$progressBar = $('<span class="pS-progressBar">').appendTo($rail),
-				$number = $('<span class="pS-number">').appendTo($rail),
+			var $slider = $('<span class="pS-slider"></span>'),
+				$rail = $('<span class="pS-rail"></span>').data({'status': 'ready'}).appendTo($slider),
+				$thumb = $('<span class="pS-thumb"></span>').data({'status': 'ready'}).appendTo($rail),
+				$progressBar = $('<span class="pS-progressBar"></span>').appendTo($rail),
+				$number = $('<span class="pS-number"></span>').appendTo($rail),
 				$cap = $('<span class="pS-cap-min"></span><span class="pS-cap-max"></span>').appendTo($rail),
-				$arrows = $('<div class="pS-arrows">').appendTo($slider),
-				$up = $('<span class="pS-btn pS-btn-up">+</span>').appendTo($arrows),
-				$down = $('<span class="pS-btn pS-btn-down">&ndash;</span>').appendTo($arrows);				
+				$arrows = $('<div class="pS-arrows"></span>').appendTo($slider),
+				$up = $('<span class="pS-btn pS-btn-up"></span>').html(opt.plusText).appendTo($arrows),
+				$down = $('<span class="pS-btn pS-btn-down"></span>').html(opt.minusText).appendTo($arrows);				
 			
 			/* store slider components in data in order for reference */
 			$el.data({$thumb : $thumb, $rail : $rail, $up : $up, $down : $down, $number : $number, $progressBar : $progressBar, opt : opt});
@@ -96,6 +98,14 @@ $.fn.pSlider = function ( option ) {
 			};
 			
 			dataController($el, opt.positions[$.inArray(opt.value, opt.values)] * opt.length, 'onLoad');
+			
+			if($.browser.msie) {
+				var id = $el.attr('id');
+				document.getElementById(id).innerHTML = $slider;
+			}
+			else {
+				$el.html($slider);
+			};
 			
 			$el.html($slider);
 		};
