@@ -288,23 +288,20 @@ $.fn.pSlider = function ( option ) {
 					$(this).unbind('mouseup mousemove');
 				};
 				
-				
 				// prevent iPhone from triggering click event
-				setTimeout( function () { $el.data('$thumb').data({'status' : 'ready'}) }, 1000);
+				setTimeout( function () { 
+					$el.data('$thumb').data({'status' : 'ready'}).removeClass('pS-dragging');
+				}, 1000);
 			},
 			
 			onArrowClick : function (e) {
 				int = true;
 				$(this).addClass('pS-arrowDown');
-				
 				if(e.type == "touchstart") {
 					$(this).unbind('mousedown');
-				}
-				
+				};
 				plusVal($el, $(this), e.data.direction)
-					
 				$(document).bind('mouseup touchend', handlers.onArrowRelease);
-				
 				return false;
 			},
 			
@@ -319,14 +316,16 @@ $.fn.pSlider = function ( option ) {
 		
 		arrayVal = function ( index, value ) {
 			if($.isArray(opt.array) && opt.array.length > 0) {
-				if(typeof(opt.array[index]) == 'undefined')
+				if(typeof(opt.array[index]) == 'undefined') {
 					return opt.array[index % opt.array.length];
-				else		
+				}
+				else {		
 					return opt.array[index];
+				};
 			}	
 			else {
 				return value;
-			}
+			};
 		};
 		
 		// Manage arrow keys
