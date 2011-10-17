@@ -4,21 +4,17 @@ body {
 	font-family:Cambria, "Times New Roman", serif;
 }
 
-h1 {
+h1, p , h2  {
 	text-align:center;
-}
-
-p {
 	clear: both;
-	text-align:center
 }
 
-#slider1, #slider2 {
+.clear {
+	clear: both;
 }
 
 .pS-slider {
 	display:block;
-	padding:70px 0 0;
 }
 
 .pS-rail {
