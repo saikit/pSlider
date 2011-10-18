@@ -117,7 +117,7 @@ $.fn.pSlider = function ( option ) {
 		
 		// all handlers use this to output slider position, value, and index
 		
-		dataController = function (element, coordinate, call) {
+		dataController = function (element, coordinate, call, nextVal) {
 			coordinate = coordinate/opt.length;
 			opt = element.data('opt');
 			
@@ -131,9 +131,15 @@ $.fn.pSlider = function ( option ) {
 				var value = opt.values[opt.indexes];
 				var index = opt.indexes;
 			}
+			else if(nextVal)
+			{
+				var index = $.inArray(nextVal, opt.values);
+				var position = opt.positions[index];
+				var value = opt.values[index];
+			}
 			else {
 				for(i = 0, len = opt.indexes; i<len; i++) {
-					if(coordinate - opt.positions[i] < 1/opt.indexes || coordinate - opt.positions[i] == 0) {
+					if(coordinate - opt.positions[i] < opt.positions[1] || coordinate - opt.positions[i] == 0) {
 						var position = opt.positions[i];
 						var value = opt.values[i];
 						var index = i;
@@ -186,7 +192,7 @@ $.fn.pSlider = function ( option ) {
 			}
 			else {
 				element.data('$thumb').animate({left : position + '%'}, opt.animSpeed);
-				element.data('$number').animate({bottom : position + '%'}, opt.animSpeed)
+				element.data('$number').animate({left : position + '%'}, opt.animSpeed)
 				element.data('$progressBar').animate({width : position + '%'}, opt.animSpeed);
 			}
 			
@@ -228,7 +234,7 @@ $.fn.pSlider = function ( option ) {
 				opt = $el.data('opt');
 				if($el.data('status') == 'ready') {
 					$el.data({'status' : 'moving'});
-					var position = opt.axis == 'y' ? (opt.length - (e.pageY - $el.data('$rail').offset().top)) * 100 : (opt.length - (e.pageX - $el.data('$rail').offset().left)) * 100;
+					var position = opt.axis == 'y' ? (opt.length - (e.pageY - $el.data('$rail').offset().top)) * 100 : (e.pageX - $el.data('$rail').offset().left) * 100;
 					dataController($el, position, 'onFinish');
 				}
 				return false;
@@ -271,7 +277,7 @@ $.fn.pSlider = function ( option ) {
 					}
 				}
 				
-				var position = opt.axis == 'y' ? (opt.length - (e.pageY - $el.data('$rail').offset().top)) * 100 : (opt.length - (e.pageX - $el.data('$rail').offset().left)) * 100;
+				var position = opt.axis == 'y' ? (opt.length - (e.pageY - $el.data('$rail').offset().top)) * 100 : (e.pageX - $el.data('$rail').offset().left) * 100;
 					
 				dataController($el, position, 'onMove');
 				
@@ -350,13 +356,10 @@ $.fn.pSlider = function ( option ) {
 				return;
 			}
 				
-			var value = element.data('data').value;
+			var value = direction == 'up' ? element.data('data').value + opt.step : element.data('data').value - opt.step;
 			
-			if(direction == 'up' && value < opt.max) {
-				dataController(element, opt.positions[$.inArray(value, opt.values) + 1] * opt.length, 'onFinish');
-			}
-			else if(direction == 'down' && value > opt.min) {
-				dataController(element, opt.positions[$.inArray(value, opt.values) - 1] * opt.length, 'onFinish');
+			if(value >= opt.min && value <= opt.max) {
+				dataController(element, '', 'onFinish', value);
 			}
 			else {
 				return;
@@ -370,7 +373,7 @@ $.fn.pSlider = function ( option ) {
 		callback = function (element, value, position, index, call) {
 			data = {
 				value : value, // the displayed slider value
-				arrayValue : $.isArray(opt.array) ? arrayVal(value) : value, // the displayed value matched against opt.array
+				arrayValue : $.isArray(opt.array) ? arrayVal(index) : value, // the displayed value matched against opt.array
 				percentage : Math.round(position / opt.tAdjust), // slider position relative to slider length
 				index : index // slider index
 			};
