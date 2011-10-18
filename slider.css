@@ -131,12 +131,11 @@ h1, p , h2  {
 }
 
 .pS-slider-x {
-	clear:both;
-	width:auto;
 	position:relative;
 	z-index:10;
 	padding:100px 0 0;
 	width:600px;
+	margin:auto;
 }
 
 .pS-slider-x .pS-arrows {
