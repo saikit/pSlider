@@ -9,22 +9,23 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script type="text/javascript" src="jquery.pSlider.js"></script>
 <script type="text/javascript">
+var numbers = ['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十'];
 $(function () 
 {
-	$('#slider1').pSlider(
-	{
-	});
+	$('#slider1').pSlider();
 	$('#slider2').pSlider({
-			axis : 'y',
-			min : 0,
-			max : 10000,
-			value : 200,
+			axis : 'x',
+			min : 1,
+			max : 20,
+			value : 10,
 			length: 336,
-			step: 5,
 			thumb: 38,
-			flip: 80,
+			flip: null,
 			arrowSpeed: 50,
 			animate: true,
+			array: numbers,
+			plusText: '加',
+			minusText: '减',
 			onLoad : function (response)
 			{
 				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p><p>The slider percentage is <span id="percent">'+ response.percentage +'</span>%</p>').insertAfter('#slider2');
