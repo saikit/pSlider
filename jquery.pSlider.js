@@ -122,6 +122,7 @@ $.fn.pSlider = function ( option ) {
 		
 		dataController = function (element, coordinate, call, nextVal) {
 			coordinate = coordinate/opt.length;
+			opt = element.data('opt');
 			
 			if(coordinate < 0) {
 				var position = opt.positions[0];
@@ -168,6 +169,7 @@ $.fn.pSlider = function ( option ) {
 		// animation from clicking on rail
 		
 		animateSlider = function (element, position, value, index, call) {
+			opt = element.data('opt');
 			_animNum = function () {
 				if(cVal == value) {
 					clearInterval(anim);
@@ -209,6 +211,7 @@ $.fn.pSlider = function ( option ) {
 		};
 		
 		setSlider = function (element, position, value, index, call) {
+			opt = element.data('opt');
 			if(opt.axis == 'y') {
 				element.data('$thumb').css({bottom : position + '%'});
 				element.data('$number').css({bottom : position + '%'}).text(arrayVal(index, value));
