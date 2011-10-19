@@ -25,8 +25,8 @@ $(function ()
 			arrowSpeed: 50,
 			animate: true,
 			array: numbers,
-			plusText: '加',
-			minusText: '减',
+			plusText: '&uarr;',
+			minusText: '&darr;',
 			onLoad : function (response)
 			{
 				$('<p>The value of this position is <span id="value">'+ response.value +'</span></p><p>The slider percentage is <span id="percent">'+ response.percentage +'</span>%</p>').insertAfter('#slider2');
