@@ -26,13 +26,13 @@ h1, p , h2  {
 	width:13px;
 	margin:0 auto 21px;
 	border-radius:7px;
-	position:relative;
+	position:relative; /* do not change */
 	z-index:2;
 }
 
 .pS-rail .pS-progressBar {
 	z-index:5;
-	position:absolute;
+	position:absolute; /* do not change */
 	display:block;
 	background:#9eeb4b;
 	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#9eeb4b), to(#79ca19));
@@ -49,12 +49,13 @@ h1, p , h2  {
 	background: #aaa;
 	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#eee), to(#aaa));
 	background:-moz-linear-gradient(0% 0% 180deg,#eee, #aaa);
-	border-radius:12px;
+	border-radius:19px;
 	height:38px;
 	width:37px;
 	z-index:10;
-	position:absolute;
+	position:absolute; /* do not change */
 	margin:0 0 0 -12px;
+	cursor:pointer;
 }
 
 .pS-number {
@@ -72,9 +73,10 @@ h1, p , h2  {
 	text-align:center;
 	display:block;
 	margin:0 0 70px -44px;
-	position:absolute;
+	position:absolute; /* do not change */
 	box-shadow:10px 10px 25px #333;
 	border:1px solid #000;
+	cursor:pointer;
 }
 
 
@@ -93,6 +95,7 @@ h1, p , h2  {
 	font-size:48px;
 	cursor:pointer;
 	font-weight:600;
+	text-shadow:0 0 1px #000;
 }
 
 .pS-btn-up {
@@ -156,7 +159,7 @@ h1, p , h2  {
 }
 
 .pS-slider-x .pS-thumb {
-	margin:-11px 0 0;
+	margin:-14px 0 0;
 }
 
 .pS-slider-x .pS-number {

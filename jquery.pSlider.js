@@ -22,7 +22,8 @@ Website : http://areyoudesign.com/blog
 		animSpeed: 200, // animation speed for click event (ms)
 		arrowSpeed: 200, // set the interval for holding down the arrow buttons (ms)
 		thumb: 36, // size of the thumb (px)
-		flip: 80, // percentage value the number is in a flipped state
+		numberBind: false, // bind the numbers with slider events
+		flip: null, // percentage value the number is in a flipped state
 		plusText: '+', // text inside the up button
 		minusText: '&ndash;', //text inside the down button
 		array: [], // display values matched against an array
@@ -110,7 +111,9 @@ $.fn.pSlider = function ( option ) {
 		initListeners = function () {
 			$el.data('$rail').click(handlers.onRailClick);
 			$el.data('$thumb').bind('mousedown touchstart click', handlers.onThumbDrag);
-			$el.data('$number').bind('touchstart mousedown select', handlers.onThumbDrag);			
+			if(opt.numberBind) {
+				$el.data('$number').bind('touchstart mousedown select', handlers.onThumbDrag);			
+			}
 			$el.data('$up').bind('mousedown touchstart', {direction : 'up'}, handlers.onArrowClick);
 			$el.data('$down').bind('mousedown touchstart', {direction : 'down'}, handlers.onArrowClick);
 		};
@@ -119,7 +122,6 @@ $.fn.pSlider = function ( option ) {
 		
 		dataController = function (element, coordinate, call, nextVal) {
 			coordinate = coordinate/opt.length;
-			opt = element.data('opt');
 			
 			if(coordinate < 0) {
 				var position = opt.positions[0];

@@ -10,7 +10,7 @@ Current features
 * Options galore
 * Put your own values to display
 * Public access to slider data
-* Custimizable with CSS
+* Customizable with CSS
 
 Future features
 
