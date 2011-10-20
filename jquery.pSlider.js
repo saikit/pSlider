@@ -117,6 +117,9 @@ $.fn.pSlider = function ( option ) {
 			if(opt.numberBind) {
 				$el.data('$number').bind('touchstart mousedown click', handlers.onThumbDrag);			
 			}
+			else {
+				$el.data('$number').bind('click', false );
+			};
 		};
 		
 		// all handlers use this to output slider position, value, and index
@@ -242,7 +245,7 @@ $.fn.pSlider = function ( option ) {
 					$el.data({'status' : 'moving'});
 					var position = opt.axis == 'y' ? (opt.length - (e.pageY - $el.data('$rail').offset().top)) * 100 : (e.pageX - $el.data('$rail').offset().left) * 100;
 					dataController($el, position, 'onFinish');
-				}
+				};
 				return false;
 			},
 			
@@ -259,13 +262,12 @@ $.fn.pSlider = function ( option ) {
 						};								
 						e = e.touches[0];                                                          
 					};
-				}
+				};
 				
 				$el.data('$thumb').addClass('pS-dragging').data({'status' : 'moving'});;
 					
 				// allow mousemove on any part of the document	
 				$(document).bind('mousemove touchmove', {element: $el}, handlers.onRailMove);
-				
 				return false;
 			},
 			
@@ -295,10 +297,9 @@ $.fn.pSlider = function ( option ) {
 			
 			onMouseUp : function (e) {
 				var $el = e.data.element;
-				
+					$el.data({'status' : 'ready'}).data('$thumb').removeClass('pS-dragging');
+					
 				$(this).unbind('mouseup mousemove touchend touchmove');
-				
-				$el.data({'status' : 'ready'}).data('$thumb').removeClass('pS-dragging');
 			},
 			
 			onArrowClick : function (e) {
