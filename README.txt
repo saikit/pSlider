@@ -6,7 +6,7 @@ saikit@areyoudesign.com
 
 Current features
 
-* Works on mobile as well as desktop
+* Works on mobile as well as on desktop browser.
 * Options galore
 * Put your own values to display
 * Public access to slider data
