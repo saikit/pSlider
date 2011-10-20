@@ -2,6 +2,7 @@
 
 body {
 	font-family:Cambria, "Times New Roman", serif;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0); 
 }
 
 h1, p , h2  {
