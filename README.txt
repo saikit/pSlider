@@ -20,7 +20,7 @@ Installation instuctions (default values displayed)
 
 <head>
 	<link type="text/css" href="slider.css" rel="stylesheet">
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="jquery.pSlider.js"></script>
 </head>
 <body>
