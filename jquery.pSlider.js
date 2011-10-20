@@ -111,11 +111,12 @@ $.fn.pSlider = function ( option ) {
 		initListeners = function () {
 			$el.data('$rail').click(handlers.onRailClick);
 			$el.data('$thumb').bind('mousedown touchstart click', handlers.onThumbDrag);
-			if(opt.numberBind) {
-				$el.data('$number').bind('touchstart mousedown select', handlers.onThumbDrag);			
-			}
 			$el.data('$up').bind('mousedown touchstart', {direction : 'up'}, handlers.onArrowClick);
 			$el.data('$down').bind('mousedown touchstart', {direction : 'down'}, handlers.onArrowClick);
+			
+			if(opt.numberBind) {
+				$el.data('$number').bind('touchstart mousedown click', handlers.onThumbDrag);			
+			}
 		};
 		
 		// all handlers use this to output slider position, value, and index
@@ -246,9 +247,7 @@ $.fn.pSlider = function ( option ) {
 			},
 			
 			onThumbDrag : function (e) {
-				
-				$el.data('$thumb').addClass('pS-dragging').data({'status' : 'moving'});;
-
+				e.stopPropagation();
 				if(e.type == 'click' || e.type == 'select') {	
 					return false;
 				};
@@ -261,6 +260,8 @@ $.fn.pSlider = function ( option ) {
 						e = e.touches[0];                                                          
 					};
 				}
+				
+				$el.data('$thumb').addClass('pS-dragging').data({'status' : 'moving'});;
 					
 				// allow mousemove on any part of the document	
 				$(document).bind('mousemove touchmove', {element: $el}, handlers.onRailMove);
@@ -295,20 +296,9 @@ $.fn.pSlider = function ( option ) {
 			onMouseUp : function (e) {
 				var $el = e.data.element;
 				
-				if(e.type == 'touchend') {
-					$(this).unbind('touchmove touchend');
-				}
-				else {
-					$(this).unbind('mouseup mousemove');
-				};
+				$(this).unbind('mouseup mousemove touchend touchmove');
 				
-				$el.data('$thumb').removeClass('pS-dragging');
-				
-				// prevent iPhone from triggering click event
-				setTimeout( function () { 
-					$el.data({'status' : 'ready'});
-					$el.data('$thumb').removeClass('pS-dragging');
-				}, 100);
+				$el.data({'status' : 'ready'}).data('$thumb').removeClass('pS-dragging');
 			},
 			
 			onArrowClick : function (e) {
