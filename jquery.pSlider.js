@@ -97,14 +97,6 @@ $.fn.pSlider = function ( option ) {
 			
 			dataController($el, opt.positions[$.inArray(opt.value, opt.values)] * opt.length, 'onLoad');
 			
-			if($.browser.msie) {
-				var id = $el.attr('id');
-				document.getElementById(id).innerHTML = $slider;
-			}
-			else {
-				$el.html($slider);
-			};
-			
 			$el.html($slider);
 		};
 		
@@ -381,6 +373,19 @@ $.fn.pSlider = function ( option ) {
 			if(typeof(opt[call]) === 'function')
 				opt[call].call(this, data);
 		};
+		
+		// setting public methods
+		
+		$el.data({'pSlider': {
+				setValue : function (value) {
+					dataController($el, '', 'onFinish', value);
+				},
+				
+				getData : function (type) {
+					return $el.data('data')[type];
+				}
+			}
+		});
 		
 		return {
 			init : init
