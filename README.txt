@@ -11,10 +11,7 @@ Current features
 * Put your own values to display
 * Public access to slider data
 * Customizable with CSS
-
-Future features
-
-* Allow manipulation of the slider from elsewhere.
+* Manipulate slider from anywhere.
 
 Installation instuctions (default values displayed)
 
@@ -46,5 +43,19 @@ Installation instuctions (default values displayed)
 			onMove: {}, // callback function that run while slider in motion
 			onFinish: {} // callback function that run after end of each action
 	});
+	
+	// Accessing the API
+	
+	var api = $('#element').data('pSlider');
+	
+	// setValue(value) move slide to value.
+	
+	api.setValue(5);
+	
+	// getData(type) retrieve slider data. Choices are 'value', 'index', 'percentage', 'arrayValue'.
+	
+	var value = api.getData('value');
+	
 	</script>
 </body>
+
